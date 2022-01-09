@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import numpy as np
 import pandas as pd
 
@@ -9,7 +9,7 @@ datasets_filenames = ["data/2021-12-05.csv","data/2021-12-12.csv","data/2021-12-
 def merge(filenames):
 	list_of_df = []
 	for filename in filenames:
-		current_df = pd.read_csv(filename,sep='	')
+		current_df = pd.read_csv(filename,sep='\t')
 		list_of_df.append(current_df)
 
 	all_df = pd.concat(list_of_df)
@@ -25,13 +25,15 @@ def clean(dataset):
     # Delete all rows with a missing values if any
 	clean_df.dropna(inplace=True)
 
-	# Reformat trending_date to discard crawl time
-	clean_df['trending_date'] = clean_df['trending_date'].map(lambda p : p[:10])
+	# Check format of trending_date
+	clean_df['trending_date'] = pd.to_datetime(clean_df['trending_date'],format="%Y-%m-%dT%H:%M:%SZ")
 
-    # Only keep rows with comments_disbled == FALSE
+    # Only keep rows with ratings_disbled == FALSE
 	for x in clean_df.index:
-		if clean_df.loc[x,'ratings_disabled'] == 'False':
+		if str(clean_df.loc[x,'ratings_disabled']) == 'False':
 			clean_df.loc[x,'ratings_disabled'] = False
+		elif str(clean_df.loc[x,'ratings_disabled']) == 'True':
+			clean_df.loc[x,'ratings_disabled'] = True
 	clean_df = clean_df[(clean_df['ratings_disabled'] == False)]
 	
 	# Correct negative values, if any
@@ -69,6 +71,9 @@ def clean(dataset):
 
 	return clean_df
 
+# DO NOT RUN
+# DO NOT RUN
+# DO NOT RUN
 combined_df = merge(datasets_filenames)
 print(combined_df.shape)
 print(combined_df.columns)
@@ -77,5 +82,6 @@ clean_df = clean(combined_df)
 print(clean_df.shape)
 print(clean_df.columns)
 clean_df.to_csv('data/clean.csv')
+
 
 
