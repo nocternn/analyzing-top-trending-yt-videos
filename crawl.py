@@ -52,21 +52,20 @@ def filter(items):
 		try:
 			filtered_item['view_count'] = statistics['viewCount']
 		except:
-			filtered_item['view_count'] = None
+			filtered_item['view_count'] = 0
 		ratings_disabled = False
 		comments_disabled = False
 		try:
 			filtered_item['likes'] = statistics['likeCount']
-			filtered_item['dislikes'] = statistics['dislikesCount']
+			filtered_item['dislikes'] = 0
 		except:
-			filtered_item['likes'] = None
-			filtered_item['dislikes'] = None
+			filtered_item['likes'] = 0
 			ratings_disabled = True
 		try:
 			filtered_item['comment_count'] = statistics['commentCount']
 			filtered_item['comments_disabled'] = False
 		except:
-			filtered_item['comment_count'] = None
+			filtered_item['comment_count'] = 0
 			comments_disabled = True
 		filtered_item['comments_disabled'] = comments_disabled
 		filtered_item['ratings_disabled'] = ratings_disabled
