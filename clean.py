@@ -1,3 +1,4 @@
+from datetime import datetime
 import numpy as np
 import pandas as pd
 
@@ -20,38 +21,54 @@ def clean(dataset):
 
     # Replace NaN in description with space
 	clean_df["description"].fillna(" ", inplace=True)
+
     # Delete all rows with a missing values if any
 	clean_df.dropna(inplace=True)
 
-    # Only keep rows with comments_disbled == FALSE
-	clean_df = clean_df[(clean_df['comments_disabled'] == 'False')]
+	# Reformat trending_date to discard crawl time
+	clean_df['trending_date'] = clean_df['trending_date'].map(lambda p : p[:10])
 
-    # create new empty column
+    # Only keep rows with comments_disbled == FALSE
+	for x in clean_df.index:
+		if clean_df.loc[x,'ratings_disabled'] == 'False':
+			clean_df.loc[x,'ratings_disabled'] = False
+	clean_df = clean_df[(clean_df['ratings_disabled'] == False)]
+	
+	# Correct negative values, if any
+	for x in clean_df.index:
+		clean_df.loc[x,'view_count'] = int(clean_df.loc[x,'view_count'])
+		clean_df.loc[x,'likes'] = int(clean_df.loc[x,'likes'])
+		clean_df.loc[x,'dislikes'] = int(clean_df.loc[x,'dislikes'])
+		clean_df.loc[x,'comment_count'] = int(clean_df.loc[x,'comment_count'])
+		if clean_df.loc[x,'view_count'] < 0:
+			clean_df.loc[x,'view_count'] = 0
+		if clean_df.loc[x,'likes'] < 0:
+			clean_df.loc[x,'likes'] = 0
+		if clean_df.loc[x,'dislikes'] < 0:
+			clean_df.loc[x,'dislikes'] = 0
+		if clean_df.loc[x,'comment_count'] < 0:
+			clean_df.loc[x,'comment_count'] = 0
+
+    # Create new empty column
 	clean_df['notes'] = " "
 
-    # rename column to match snake case
+    # Rename some columns for uniformity
 	clean_df.rename(columns={'channelTitle': 'channel_title',
                              'publishedAt': 'published_at',
                              'channelId': 'channel_id',
 							 'categoryId' : 'category_id'}, inplace=True)
 
-    # delete non-relevant columns
-	clean_df.drop(['comments_disabled'], axis=1, inplace=True)
+    # Delete irrelevant columns
+	clean_df.drop(['ratings_disabled'], axis=1, inplace=True)
 
 	clean_df = clean_df.reindex(columns=['video_id', 'title', 'published_at', 'channel_id', 'channel_title',
                                          'category_id', 'trending_date', 'view_count', 'likes', 'dislikes', 
-										 'comment_count', 'ratings_disabled', 'description', 'notes'])
+										 'comment_count', 'comments_disabled', 'description', 'notes'])
 
 	clean_df.reset_index(drop=True, inplace=True)
 
 	return clean_df
 
-temp = pd.read_csv('data/2022-01-09.csv',sep='	')
-#temp = clean(temp)
-print(temp.loc[1,:])
-
-
-"""
 combined_df = merge(datasets_filenames)
 print(combined_df.shape)
 print(combined_df.columns)
@@ -59,6 +76,6 @@ print(combined_df.columns)
 clean_df = clean(combined_df)
 print(clean_df.shape)
 print(clean_df.columns)
-#clean_df.to_csv('data/clean.csv')
-"""
+clean_df.to_csv('data/clean.csv')
+
 
