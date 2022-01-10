@@ -25,8 +25,13 @@ def clean(dataset):
     # Delete all rows with a missing values if any
 	clean_df.dropna(inplace=True)
 
-	# Check format of trending_date
-	clean_df['trending_date'] = pd.to_datetime(clean_df['trending_date'],format="%Y-%m-%dT%H:%M:%SZ")
+	# Change format of trending_date to discard crawl time
+	clean_df['trending_date'].mask(clean_df['trending_date'] == '2021-12-05T00:00:00Z','5/12/2021',inplace=True) 
+	clean_df['trending_date'].mask(clean_df['trending_date'] == '2021-12-12T00:00:00Z','12/12/2021',inplace=True) 
+	clean_df['trending_date'].mask(clean_df['trending_date'] == '2021-12-19T00:00:00Z','19/12/2021',inplace=True) 
+	clean_df['trending_date'].mask(clean_df['trending_date'] == '2021-12-26T00:00:00Z','26/12/2021',inplace=True) 
+	clean_df['trending_date'].mask(clean_df['trending_date'] == '2022-01-02T00:00:00Z','02/01/2022',inplace=True) 
+	clean_df['trending_date'].mask(clean_df['trending_date'] == '2022-01-09T00:00:00Z','09/01/2022',inplace=True) 
 
     # Only keep rows with ratings_disbled == FALSE
 	for x in clean_df.index:
