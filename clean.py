@@ -65,8 +65,8 @@ def clean(dataset):
 
     # Rename some columns for uniformity
 	clean_df.rename(columns={'channelTitle': 'channel_title',
-                             'publishedAt': 'published_at',
-                             'channelId': 'channel_id',
+			     'publishedAt': 'published_at',
+			     'channelId': 'channel_id',
 							 'categoryId' : 'category_id'}, inplace=True)
 
     # Delete irrelevant columns
@@ -91,23 +91,20 @@ def clean(dataset):
 	clean_df.drop_duplicates(subset=['video_id','trending_date'],keep='first',inplace=True)
 	
 	clean_df = clean_df.reindex(columns=['video_id', 'title', 'published_at', 'channel_id', 'channel_title',
-                                         'category_id', 'trending_date', 'view_count', 'likes', 'dislikes', 
+					 'category_id', 'trending_date', 'view_count', 'likes', 'dislikes', 
 										 'comment_count', 'comments_disabled', 'description', 'notes'])
 
 	clean_df.reset_index(drop=True, inplace=True)
 
 	return clean_df
 
-# DO NOT RUN
-# DO NOT RUN
-# DO NOT RUN
+def main():
+	combined_df = merge(datasets_filenames)
+	print(combined_df.shape)
+	print(combined_df.columns)
 
-combined_df = merge(datasets_filenames)
-print(combined_df.shape)
-print(combined_df.columns)
+	clean_df = clean(combined_df)
 
-clean_df = clean(combined_df)
-
-print(clean_df.shape)
-print(clean_df.columns)
-clean_df.to_csv('data/clean.csv')
+	print(clean_df.shape)
+	print(clean_df.columns)
+	clean_df.to_csv('data/clean.csv')

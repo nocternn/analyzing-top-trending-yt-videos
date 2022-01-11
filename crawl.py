@@ -28,7 +28,7 @@ def crawl():
 			).execute()
 			items.extend(response.get('items'))
 		dataset.extend(filter(items))
-	convertToCSV(dataset)
+	return dataset
 
 def filter(items):
 	filtered = []
@@ -81,5 +81,6 @@ def convertToCSV(data):
 	df = pd.DataFrame(data)
 	df.to_csv('data/{0}.csv'.format(datetime.now().strftime("%Y-%m-%d")), sep='\t', encoding='utf-8', index=False)
 
-if __name__ == '__main__':
-	crawl()
+def main():
+	data = crawl()
+	convertToCSV(data)
