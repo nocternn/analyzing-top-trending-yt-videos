@@ -72,7 +72,8 @@ def filter(items):
 
 		# get description
 		filtered_item['description'] = snippet['description']
-
+		for i in filtered_item:
+			filtered_item[i] = str(filtered_item[i])
 		filtered.append(filtered_item)
 	return filtered
 
