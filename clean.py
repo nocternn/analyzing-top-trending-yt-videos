@@ -98,6 +98,9 @@ def clean(dataset):
 
 	return clean_df
 
+def read():
+	return pd.read_csv('data/clean.csv')
+
 def main():
 	combined_df = merge(datasets_filenames)
 	print(combined_df.shape)

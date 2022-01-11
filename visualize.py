@@ -38,7 +38,7 @@ CATEGORIES = {1: 'Film & Animation',\
 	43: 'Shows',\
 	44: 'Trailers'}
 
-def plot_1(videos):
+def plot_1(dataframe):
 	'''
 	Author: Trang
 	'''
@@ -51,9 +51,9 @@ def plot_1(videos):
 		categories.append(CATEGORIES[i])
 	popularity = [0]*len(categories)
 	# populate arrays with popularity point
-	for i in videos.index:
-		t = categories.index(CATEGORIES[int(videos.loc[i,'category_id'])])
-		popularity[t] += int(videos.loc[i,'notes'])
+	for i in dataframe.index:
+		t = categories.index(CATEGORIES[int(dataframe.loc[i,'category_id'])])
+		popularity[t] += int(dataframe.loc[i,'notes'])
 	# create dataset and sort by total popularity
 	dataset = pd.DataFrame(data={'categories': categories, 'popularity': popularity})
 	dataset = dataset.groupby('categories').sum().sort_values(by=['popularity'], ascending=False)
@@ -68,7 +68,7 @@ def plot_1(videos):
 	plt.pie(dataset['popularity'],labels=dataset.index, shadow=False,colors=colors,autopct=lambda pct: func(pct, dataset['popularity']))
 	plt.show()
 
-def plot_2(videos):
+def plot_2(dataframe):
 	'''
 	Author: Trang
 	'''
@@ -77,10 +77,10 @@ def plot_2(videos):
 	printable = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \t\n'
 	
 	# filter all the titles to leave only printable characters
-	videos['title'] = videos['title'].apply( lambda x: ''.join(filter(lambda xi: xi in printable, x)))
+	dataframe['title'] = dataframe['title'].apply( lambda x: ''.join(filter(lambda xi: xi in printable, x)))
 	# get each video title, break the words into tokens and add to 'text'
-	for x in videos.index:
-		title = str(videos.loc[x,'title'])
+	for x in dataframe.index:
+		title = str(dataframe.loc[x,'title'])
 			
 		tokens = title.split()
 		for i in range(len(tokens)):
