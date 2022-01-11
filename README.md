@@ -37,15 +37,15 @@ e.g. python3 main.py 1 --crawl
 ```
 The plot code is mandatory.
 ### Plot codes
-```1``` - Analyze the interest of the 5 regions based on their top trending categories.
-```2``` - Do certain keywords in the videos' titles have anything to do with trending?
-```3``` - Categories of videos that are the most controversial (have the highest dislike-ratio).
-```4``` - Analyze the effect of the holiday season on Youtube trending tab.
-```5``` - We tend to assume the view count, the like & dislike count, the comment count (the public response) are what contribute to a video’s trending ability, but is that entirely true?
+```1``` - Analyze the interest of the 5 regions based on their top trending categories.  
+```2``` - Do certain keywords in the videos' titles have anything to do with trending?  
+```3``` - Categories of videos that are the most controversial (have the highest dislike-ratio).  
+```4``` - Analyze the effect of the holiday season on Youtube trending tab.  
+```5``` - We tend to assume the view count, the like & dislike count, the comment count (the public response) are what contribute to a video’s trending ability, but is that entirely true?  
 ```6``` - Analyze the average view count requirement of a category to enter the trending tab.
 ### Options
 ```--crawl```
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Enable crawling for data from Youtube trending tab. The data will be saved in folder *data* under the name *YYY-MM-DD.csv*.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Enable crawling for data from Youtube trending tab. The data will be saved in folder *data* under the name *YYY-MM-DD.csv*.  
 ```--clean```
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Merges the files containing crawled data into one file and filters out invalid entries. The cleaned data is saved in folder *data* under the name *clean.csv*.
 
