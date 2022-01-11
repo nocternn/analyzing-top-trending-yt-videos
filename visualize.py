@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import wordcloud
 
 CATEGORIES = {1: 'Film & Animation',\
 	2: 'Autos & Vehicles',\
@@ -36,66 +37,53 @@ CATEGORIES = {1: 'Film & Animation',\
 	44: 'Trailers'}
 
 def plot_question_1(videos):
-	# Creating autocpt arguments
 	def func(pct, allvalues):
 		absolute = int(pct / 100.*np.sum(allvalues))
-		return "{:.1f}%\n({:d} g)".format(pct, absolute)
-	# create empty arrays to hold relevant data
+		return "{:.1f}%\n({:d}pts)".format(pct, absolute)
+	# create 2 arrays to hold the categories' names and its popularity point
 	categories = []
-	view_counts = []
-	# populate arrays
-	for video in videos:
-		categories.append(CATEGORIES[int(video['snippet']['categoryId'])])
-		try:
-			view_counts.append(int(video['statistics']['viewCount']))
-		except:
-			view_counts.append(0)
-	# create dataset and sort by total view count
-	dataset = pd.DataFrame(data={'categories': categories, 'view_count': view_counts})
-	dataset = dataset.groupby('categories').sum().sort_values(by=['view_count'], ascending=False)
+	for i in CATEGORIES.keys():
+		categories.append(CATEGORIES[i])
+	popularity = [0]*len(categories)
+	# populate arrays with popularity point
+	for i in videos.index:
+		t = categories.index(CATEGORIES[int(videos.loc[i,'category_id'])])
+		popularity[t] += int(videos.loc[i,'notes'])
+	# create dataset and sort by total popularity
+	dataset = pd.DataFrame(data={'categories': categories, 'popularity': popularity})
+	dataset = dataset.groupby('categories').sum().sort_values(by=['popularity'], ascending=False)
 	# take top 5 categories
 	dataset_top = dataset[:5].copy()
 	# one entry for all other categories
-	dataset_others = pd.DataFrame(data={'view_count': [dataset['view_count'][5:].sum()]}, index=['Others'])
+	dataset_others = pd.DataFrame(data={'popularity': [dataset['popularity'][5:].sum()]}, index=['Others'])
 	# combining top 5 with others
 	dataset = pd.concat([dataset_top, dataset_others])
-	# plot
-	dataset.plot(kind='pie', subplots=True,\
-		legend=False,\
-		shadow=True,\
-		autopct=lambda pct: func(pct, dataset['view_count'])\
-	)
+	# plot pie chart
+	colors = ['#00c2f9','#00e4b9','#feeaae','#fcb1d9','#fdfdfa','#d9ccb2']
+	plt.pie(dataset['popularity'],labels=dataset.index, shadow=False,colors=colors,autopct=lambda pct: func(pct, dataset['popularity']))
 	plt.show()
 
 def plot_question_2(videos):
-	# create empty arrays to hold relevant data
-	categories = []
-	likes_count = []
-	dislikes_count = []
-	comments_count = []
-	# populate arrays
-	for video in videos:
-		categories.append(CATEGORIES[int(video['snippet']['categoryId'])])
-		try:
-			likes_count.append(int(video['statistics']['likeCount']))
-		except:
-			likes_count.append(0)
-		try:
-			dislikes_count.append(int(video['statistics']['dislikeCount']))
-		except:
-			dislikes_count.append(0)
-		try:
-			comments_count.append(int(video['statistics']['commentCount']))
-		except:
-			comments_count.append(0)
-	# create dataset and sort by total view count
-	dataset = pd.DataFrame(data={'categories': categories,\
-		'Likes': likes_count,\
-		'Dislikes': dislikes_count,\
-		'Comments': comments_count\
-	})
-	dataset = dataset.groupby('categories').sum().sort_values(\
-		by=['Likes', 'Dislikes', 'Comments'], ascending=False)
-	# plot
-	dataset.plot(kind="barh", stacked=True)
+	# create empty string to hold all video titles later
+	text = ''
+	printable = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~ \t\n'
+	
+	# filter all the titles to leave only printable characters
+	videos['title'] = videos['title'].apply( lambda x: ''.join(filter(lambda xi: xi in printable, x)))
+	# get each video title, break the words into tokens and add to 'text'
+	for x in videos.index:
+		title = str(videos.loc[x,'title'])
+			
+		tokens = title.split()
+		for i in range(len(tokens)):
+				tokens[i] = tokens[i].lower()
+		text += ' '.join(tokens)+' '
+		
+	# generate word cloud
+	cloud = wordcloud.WordCloud(width = 1400, height = 800, background_color ='white', min_font_size = 10).generate(text)
+	# plot the word cloud
+	plt.figure(figsize = (8, 14), facecolor = None)
+	plt.imshow(cloud)
+	plt.axis("off")
+	plt.tight_layout(pad = 5) 
 	plt.show()
