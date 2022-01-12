@@ -98,7 +98,7 @@ def plot_2(dataframe):
 
 def plot_3(dataframe):
 	'''
-	Author: Austin
+	Author: Minh
 	'''
 	#initialize array
 	dislike_ratio_by_category = {}
@@ -190,7 +190,7 @@ def plot_4(dataframe):
 
 def plot_5(dataframe):
 	'''
-	Author: Austin
+	Author: Minh
 	'''
 	# fill frequency / public response table of categories
 	frequency_public_response = {}

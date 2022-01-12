@@ -31,9 +31,9 @@ Our project was written in Python. Therefore, no compilation is necessary.
 ## Run the program
 
 ```
-python3 main.py ...PLOT CODE... [options]
+python main.py ...PLOT CODE... [options]
 
-e.g. python3 main.py 1 --crawl
+e.g. python main.py 1 --crawl
 ```
 The plot code is mandatory.
 ### Plot codes
